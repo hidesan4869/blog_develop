@@ -5,6 +5,7 @@
         private $body = null;
         private $category_id = null;
         private $filename = null;
+        private $file = null;
         private $created_at = null;
         private $updated_at = null;
     
@@ -14,6 +15,9 @@
             $queryArticle->save();
         }
 
+        /*
+        getter
+        */
         public function getId() {
             return $this->id;
         }
@@ -29,6 +33,9 @@
         public function getFilename() {
             return $this->filename;
         }
+        public function getFile() {
+            return $this->file;
+        }
         public function getCreatedAt() {
             return $this->created_at;
         }
@@ -36,6 +43,9 @@
             return $this->updated_at;
         }
 
+        /*
+        setter
+        */
         public function setId($id) {
             $this->id = $id;
         }
@@ -50,6 +60,9 @@
         }
         public function setFilename($filename) {
             $this->filename = $filename;
+        }
+        public function setFile($file) {
+            $this->setFile = $file;
         }
         public function setCreatedAt($created_at) {
             $this->$created_at = $created_at;
