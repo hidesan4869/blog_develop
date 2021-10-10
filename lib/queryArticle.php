@@ -21,4 +21,25 @@
                 $stmt->execute();
             }
         }
+
+        /*
+        fetchAll() articlesテーブルの値を全て取ってくる
+        */
+        public function findAll() {
+            $stmt = $this->dbh->prepare("SELECT * FROM articles");
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $articles = array();
+
+            foreach($results as $result) {
+                $article = new Article();
+                $article->setId($result['id']);
+                $article->setTitle($result['title']);
+                $article->setBody($result['body']);
+                $article->setCreatedAt($result['created_at']);
+                $article->setUpdatedAt($result['updated_at']);
+                $articles[] = $article;
+            }
+            return $articles;
+        }
     }
