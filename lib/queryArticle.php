@@ -9,8 +9,23 @@
             $this->article = $article;
         }
 
+        /*
+        IDが存在する時は上書き処理
+        IDがなければ新規追加
+        */
         public function save() {
             if ($this->article->getId()) {
+                $id = $this->article->getId();
+                $title = $this->article->getTitle();
+                $body = $this->article->getBody();
+                $stmt = $this->dbh->prepare("UPDATE articles 
+                SET title=:title, body=:body, 
+                updated_at=NOW() WHERE id=:id");
+
+                $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+                $stmt->bindParam(':body', $body, PDO::PARAM_STR);
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+                $stmt->execute();
      
             } else {
                 $title = $this->article->getTitle();
