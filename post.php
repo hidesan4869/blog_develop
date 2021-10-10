@@ -1,18 +1,26 @@
 <?php
     include 'lib/secure.php';
     include 'lib/connect.php';
+    include 'lib/queryArticle.php';
+    include 'lib/article.php';
 
-    $title       = "";
-    $body        = "";
+    $title = "";
+    $body = "";
     $title_alert = "";
-    $body_alert  = "";
+    $body_alert = "";
 
     if (!empty($_POST['title']) && !empty($_POST['body'])) {
         $title = $_POST['title'];
         $body = $_POST['body'];
-        $db = new connect();
-        $sql = "INSERT INTO articles (title, body, created_at, updated_at) VALUES (:title, :body, NOW(), NOW())";
-        $result = $db->query($sql, array(':title' => $title, ':body' => $body));
+        // $db = new connect();
+        // $sql = "INSERT INTO articles (title, body, created_at, updated_at) VALUES (:title, :body, NOW(), NOW())";
+        // $result = $db->query($sql, array(':title' => $title, ':body' => $body));
+
+        $article = new Article();
+        $article->setTitle($title);
+        $article->setBody($body);
+        $article->save();
+
         header('Location: backend.php');
     } else if(!empty($_POST)) {
         if (!empty($_POST['title'])) {
@@ -61,8 +69,6 @@
         background-color: #ff6644 !important;
       }
     </style>
-
-    <!-- Custom styles for this template -->
     <link href="./css/blog.css" rel="stylesheet">
   </head>
   <body>
@@ -90,8 +96,8 @@
               </div>
           </form>
         </div>
-      </div><!-- /.row -->
-    </main><!-- /.container -->
+      </div>
+    </main>
 
   </body>
 </html>
