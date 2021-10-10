@@ -96,7 +96,6 @@
   <body>
 
   <div class="col-md-12">
-    <?php include('lib/nav.php'); ?>
       <h1>記事編集</h1>
       <form action="edit.php" method="POST">
         <input type="hidden" name="id" value="<?php echo $id ?>">
@@ -118,8 +117,5 @@
         </div>
       </form>
   </div>
-
-    
-
   </body>
 </html>
