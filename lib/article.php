@@ -1,11 +1,12 @@
 <?php 
     class Article {
-        private $id;
-        private $title;
-        private $body;
-        private $category_id;
-        private $created_at;
-        private $updated_at;
+        private $id = null;
+        private $title = null;
+        private $body = null;
+        private $category_id = null;
+        private $filename = null;
+        private $created_at = null;
+        private $updated_at = null;
     
         public function save() {
             $queryArticle = new QueryArticle();
@@ -25,6 +26,9 @@
         public function getCategoryId() {
             return $this->category_id;
         }
+        public function getFilename() {
+            return $this->filename;
+        }
         public function getCreatedAt() {
             return $this->created_at;
         }
@@ -43,6 +47,9 @@
         }
         public function setCategoryId($category_id) {
             $this->category_id = $category_id;
+        }
+        public function setFilename($filename) {
+            $this->filename = $filename;
         }
         public function setCreatedAt($created_at) {
             $this->$created_at = $created_at;
