@@ -12,10 +12,6 @@
     if (!empty($_POST['title']) && !empty($_POST['body'])) {
         $title = $_POST['title'];
         $body = $_POST['body'];
-        // $db = new connect();
-        // $sql = "INSERT INTO articles (title, body, created_at, updated_at) VALUES (:title, :body, NOW(), NOW())";
-        // $result = $db->query($sql, array(':title' => $title, ':body' => $body));
-
         $article = new Article();
         $article->setTitle($title);
         $article->setBody($body);
