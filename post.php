@@ -1,4 +1,6 @@
 <?php
+
+
     include 'lib/secure.php';
     include 'lib/connect.php';
     include 'lib/queryArticle.php';
@@ -24,7 +26,6 @@
         }
 
         $article->save();
-
         header('Location: backend.php');
     } else if(!empty($_POST)) {
         if (!empty($_POST['title'])) {
