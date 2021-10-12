@@ -40,11 +40,13 @@
       exit;
     
     } else if (!empty($_POST)) {
-      $id = $_POST['id'];
+      
+      if (!empty($_POST['id'])) {
+        $id = $_POST['id'];
+      }
     } else {
       header('Location: backend.php');
     }
-
 
     if (!empty($_POST['title'])) {
       $title = $_POST['title'];

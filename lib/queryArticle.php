@@ -75,7 +75,7 @@
                 $article->setId($result['id']);
                 $article->setTitle($result['title']);
                 $article->setBody($result['body']);
-                $article->setCategoryId($result['created_at']);
+                $article->setCreatedAt($result['created_at']);
                 $article->setUpdatedAt($result['updated_at']);
             }
             return $article;

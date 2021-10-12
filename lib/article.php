@@ -62,7 +62,7 @@
             $this->filename = $filename;
         }
         public function setFile($file) {
-            $this->setFile = $file;
+            $this->file = $file;
         }
         public function setCreatedAt($created_at) {
             $this->$created_at = $created_at;
