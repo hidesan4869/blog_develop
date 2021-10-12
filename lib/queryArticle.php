@@ -14,14 +14,16 @@
         IDがなければ新規追加
         */
         public function save() {
+            $title = $this->article->getTitle();
+            $body = $this->article->getBody();
+            $filename = null;
+
+
             if ($this->article->getId()) {
                 $id = $this->article->getId();
-                $title = $this->article->getTitle();
-                $body = $this->article->getBody();
                 $stmt = $this->dbh->prepare("UPDATE articles 
                 SET title=:title, body=:body, 
                 updated_at=NOW() WHERE id=:id");
-
                 $stmt->bindParam(':title', $title, PDO::PARAM_STR);
                 $stmt->bindParam(':body', $body, PDO::PARAM_STR);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -30,11 +32,40 @@
             } else {
                 $title = $this->article->getTitle();
                 $body = $this->article->getBody();
-                $stmt = $this->dbh->prepare("INSERT INTO articles (title, body, created_at, updated_at) VALUES (:title, :body, NOW(), NOW())");
+            }
+
+            if ($file = $this->article->getFile()) {
+                $old_name = $file['tmp_name'];
+                $new_name = date('YmdHis').mt_rand();
+                $is_upload = false;
+                $type = exif_imagetype($old_name);
+                
+                switch ($type) {
+                    case IMAGETYPE_JPEG:
+                        $new_name .= '.jpg';
+                        $is_upload = true;
+                        break;
+
+                    case IMAGETYPE_GIF:
+                        $new_name .= '.gif';
+                        $is_upload = true;
+                        break;
+                    
+                        case IMAGETYPE_PNG:
+                        $new_name .= '.png';
+                        $is_upload = true;
+                        break;
+                }
+
+                if ($is_upload && move_uploaded_file($old_name, __DIR__.'/../album/'.$new_name)) {
+                    $this->article->setFilename($new_name);
+                    $filename = $this->article->getFilename();
+                }
+            }
+                $stmt = $this->dbh->prepare("INSERT INTO articles (title, body, created_at, updated_at) VALUES  (:title, :body, NOW(), NOW())");
                 $stmt->bindParam(':title', $title, PDO::PARAM_STR);
                 $stmt->bindParam(':body', $body, PDO::PARAM_STR);
                 $stmt->execute();
-            }
         }
 
         public function find($id) {
