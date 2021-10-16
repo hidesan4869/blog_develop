@@ -70,6 +70,8 @@
                   <td><?php echo $article->getId() ?></td>
                   <td><?php echo $article->getTitle() ?></td>
                   <td><?php echo $article->getBody() ?></td>
+
+                  <!--三項演算子-->
                   <td><?php echo $article->getFilename()? '<img src="./album/thumbs-'.$article->getFilename().'">': 'なし' ?></td>
                   <td><?php echo $article->getCreatedAt() ?></td>
                   <td><?php echo $article->getUpdatedAt() ?></td>
