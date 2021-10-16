@@ -1,6 +1,5 @@
 <?php
 
-
     include 'lib/secure.php';
     include 'lib/connect.php';
     include 'lib/queryArticle.php';
@@ -21,10 +20,10 @@
         /*
         POSTされた画像ファイルを受け取る
         */
+        
         if (isset($_FILES['image']) && is_uploaded_file($_FILES['image']['tmp_name'])) {
           $article->setFile($_FILES['image']);
         }
-
         $article->save();
         header('Location: backend.php');
     } else if(!empty($_POST)) {
