@@ -72,7 +72,6 @@
                 return null;
             }
         }
-
         /*
         IDが存在する時は上書き処理
         IDがなければ新規追加
@@ -80,14 +79,28 @@
         public function save(){
             $title = $this->article->getTitle();
             $body = $this->article->getBody();
-            $filename = null;
+            $filename = $this -> article -> getFilename();
 
             if ($this->article->getId()) {
                 $id = $this->article->getId();
+
+                //新しいファイルがアップロードされた時
+                if ($file = $this->article->getFile()) {
+                    //ファイルが既に存在する場合、古いファイルを削除
+                    if ($this -> article -> getFilename()) {
+                        unlink(__DIR__.'/../album/thumbs-'. $this->article->getFilename());
+                        unlink(__DIR__.'/../album/'. $this->article->getFilename());
+                    }
+                    //新しいファイルをアップロード
+                    $this->article->setFilename($this->saveFile(['tmp_name']));
+                    $filename = $this->article->getFilename();
+                }
+
                 $stmt = $this->dbh->prepare("UPDATE articles
-                SET title=:title, body=:body, updated_at=NOW() WHERE id=:id");
+                SET title=:title, body=:body, filename=:filename, updated_at=NOW() WHERE id=:id");
                 $stmt->bindParam(':title', $title, PDO::PARAM_STR);
                 $stmt->bindParam(':body', $body, PDO::PARAM_STR);
+                $stmt->bindParam(':filename', $filename, PDO::PARAM_STR);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
      
