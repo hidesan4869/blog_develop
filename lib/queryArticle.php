@@ -4,13 +4,13 @@
         private $article;
         const THUMBS_WIDTH = 200;
 
+
         public function __construct() {
             parent::__construct();
         }
         public function setArticle(Article $article) {
             $this->article = $article;
         }
-
         /**
          * 画像アップロード
          */
@@ -72,10 +72,11 @@
                 return null;
             }
         }
-        /**
-         *IDが存在する時は上書き処理
-         *IDがなければ新規追加
-         */
+
+        /*
+        IDが存在する時は上書き処理
+        IDがなければ新規追加
+        */
         public function save(){
             $title = $this->article->getTitle();
             $body = $this->article->getBody();
@@ -98,45 +99,19 @@
                  */
             } else {
 
-                if ($file = $this->article->getFile()) {
-                  $old_name = $file['tmp_name'];
-                  $new_name = date('YmdHis').mt_rand();
-                  $is_upload = false;
-                  $type = exif_imagetype($old_name);
-      
-                  switch ($type){
-                    case IMAGETYPE_JPEG:
-                      $new_name .= '.jpg';
-                      $is_upload = true;
-                      break;
-                    case IMAGETYPE_GIF:
-                      $new_name .= '.gif';
-                      $is_upload = true;
-                      break;
-                    case IMAGETYPE_PNG:
-                      $new_name .= '.png';
-                      $is_upload = true;
-                      break;
-                  }   
-                  if ($is_upload && move_uploaded_file($old_name, __DIR__.'/../album/'.$new_name)){
-                    $this->article->setFilename($new_name);
-                    $filename = $this->article->getFilename();
-                  }
                   if ($file = $this -> article -> getFile()) {
                       $this -> article -> setFilename( $this -> saveFile($file['tmp_name']));
                       $filename = $this -> article -> getFilename();
                   }
                 }
+                
                 $stmt = $this->dbh->prepare("INSERT INTO articles (title, body, filename, created_at, updated_at) VALUES  (:title, :body, :filename, NOW(), NOW())");
                 $stmt->bindParam(':title', $title, PDO::PARAM_STR);
                 $stmt->bindParam(':body', $body, PDO::PARAM_STR);
                 $stmt->bindParam(':filename', $filename, PDO::PARAM_STR);
                 $stmt->execute();
                 }
-            }
-
-                
-
+            
         public function find($id) {
             $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE id=:id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -149,6 +124,7 @@
                 $article->setId($result['id']);
                 $article->setTitle($result['title']);
                 $article->setBody($result['body']);
+                $article->setFilename($result['filename']);
                 $article->setCreatedAt($result['created_at']);
                 $article->setUpdatedAt($result['updated_at']);
             }
@@ -169,6 +145,7 @@
                 $article->setId($result['id']);
                 $article->setTitle($result['title']);
                 $article->setBody($result['body']);
+                $article->setFilename($result['filename']);
                 $article->setCreatedAt($result['created_at']);
                 $article->setUpdatedAt($result['updated_at']);
                 $articles[] = $article;
