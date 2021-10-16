@@ -115,11 +115,11 @@
 
         <div class="mb-3">
           <label class="form-label"></label>
-          <?php echo !empty($body_alert)? '<div class="alert alert-danger">'.$body_alert.'</div>': ''?>
+          <?php echo !empty($body_alert) ? '<div class="alert alert-danger">'.$body_alert.'</div>': ''?>
           <textarea name="body" class="form-control" rows="10"><?php echo $body; ?></textarea>
         </div>
 
-        <?php if ($article -> getFilename()) : ?>
+        <?php if ($article->getFilename()) : ?>
           <div class="mb-3">
             <img src="/album/thumbs-<?php echo $article->getFilename() ?> ">
           </div>

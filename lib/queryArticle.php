@@ -1,5 +1,5 @@
 <?php 
-
+    
     class QueryArticle extends connect {
         private $article;
         const THUMBS_WIDTH = 200;
@@ -16,7 +16,7 @@
          */
         private function saveFile($old_name) {
             $new_name = date('YmdHis').mt_rand();
-            if ( $type = exif_imagetype($old_name)) {
+            if ($type = exif_imagetype($old_name)) {
                 //元画像の縦横サイズを取得
                 list($width, $height) = getimagesize($old_name);
                 //サムネイルの比率を求める
@@ -36,16 +36,14 @@
                     imagejpeg($canvas, __DIR__.'/../album/thumbs-'.$new_name);
                     break;
                     
-                    
                     case IMAGETYPE_GIF;
                     $new_name .= 'gif';
 
                     //サムネイルを保存
                     $image = imagecreatefromgif($old_name);
                     imagecopyresampled($canvas, $image, 0, 0, 0, 0, self::THUMBS_WIDTH, $thumbs_height, $width, $height);
-                    imagejpeg($canvas, __DIR__.'/../album/thumbs-'.$new_name);
+                    imagegif($canvas, __DIR__.'/../album/thumbs-'.$new_name);
                     break;
-
 
                     case IMAGETYPE_PNG;
                     $new_name .= 'png';
@@ -53,7 +51,7 @@
                     //サムネイルを保存
                     $image = imagecreatefrompng($old_name);
                     imagecopyresampled($canvas, $image, 0, 0, 0, 0, self::THUMBS_WIDTH, $thumbs_height, $width, $height);
-                    imagejpeg($canvas, __DIR__.'/../album/thumbs-'.$new_name);
+                    imagepng($canvas, __DIR__.'/../album/thumbs-'.$new_name);
                     break;
 
                     default:
@@ -79,13 +77,14 @@
         public function save(){
             $title = $this->article->getTitle();
             $body = $this->article->getBody();
-            $filename = $this -> article -> getFilename();
+            $filename = $this->article->getFilename();
 
             if ($this->article->getId()) {
                 $id = $this->article->getId();
 
                 //新しいファイルがアップロードされた時
                 if ($file = $this->article->getFile()) {
+
                     //ファイルが既に存在する場合、古いファイルを削除
                     if ($this -> article -> getFilename()) {
                         unlink(__DIR__.'/../album/thumbs-'. $this->article->getFilename());
@@ -112,9 +111,9 @@
                  */
             } else {
 
-                  if ($file = $this -> article -> getFile()) {
-                      $this -> article -> setFilename( $this -> saveFile($file['tmp_name']));
-                      $filename = $this -> article -> getFilename();
+                  if ($file = $this->article->getFile()) {
+                      $this->article->setFilename( $this->saveFile($file['tmp_name']));
+                      $filename = $this->article->getFilename();
                   }
                 }
                 
