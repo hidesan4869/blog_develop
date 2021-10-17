@@ -118,6 +118,15 @@
                   $stmt->execute();
                 }
             }
+
+        /**
+         * delete()メソッド
+         * delete.phpの削除処理
+         */
+        public function delete() {
+
+        }
+
             
         public function find($id) {
             $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE id=:id");
