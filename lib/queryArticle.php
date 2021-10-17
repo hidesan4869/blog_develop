@@ -203,5 +203,23 @@
             $pager['articles'] = $this->getArticles($stmt->fetchAll(PDO::FETCH_ASSOC));
             return $pager;
           }
+
+          /**
+           * getArticles
+           */
+          private function getArticles($results) {
+            $articles = array();
+            foreach ($results as $result) {
+                $article = new Article();
+                $article->setId($result['id']);
+                $article->setTitle($result['title']);
+                $article->setBody($result['body']);
+                $article->setFilename($result['filename']);
+                $article->setCreatedAt($result['created_at']);
+                $article->setUpdatedAt($result['updated_at']);
+                $articles[] = $article;
+            }
+            return $articles;
+          }
     }
 ?>
