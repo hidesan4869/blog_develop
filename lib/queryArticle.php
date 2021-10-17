@@ -82,15 +82,10 @@
 
                 //新しいファイルがアップロードされた時
                 if ($file = $this->article->getFile()) {
-
                     //ファイルが既に存在する場合、古いファイルを削除
-                    if ($this->article->getFilename()) {
-                        unlink(__DIR__.'/../album/thumbs-'.$this->article->getFilename());
-                        unlink(__DIR__.'/../album/'.$this->article->getFilename());
-                        //新しいファイルをアップロード
-                    }
-                        $this->article->setFilename($this->saveFile($file['tmp_name']));
-                        $filename = $this->article->getFilename();
+                    $this->deleteFile();
+                    $this->article->setFilename($this->saveFile($file['tmp_name']));
+                    $filename = $this->article->getFilename();
                 }
 
                 $stmt = $this->dbh->prepare("UPDATE articles SET title=:title, body=:body, filename=:filename, updated_at=NOW() WHERE id=:id");
@@ -118,9 +113,38 @@
                   $stmt->execute();
                 }
             }
-            
+
+        /**
+         * delete()メソッド
+         * delete.phpの削除処理
+         * $this->deleteFile() : 画像の削除
+         */
+        public function delete() {
+            if ($this->article->getId()) {
+                $this->deleteFile();
+                $id = $this->article->getId();
+                $stmt = $this->dbh->prepare("UPDATE articles SET is_delete=1 WHERE id=:id");
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+        }
+
+        /**
+         * deleteFile()
+         * 削除した後に画像のデータも削除
+         */
+         private function deleteFile() {
+             if ($this->article->getFilename()) {
+                 unlink(__DIR__.'/../album/thumbs-'.$this->article->getFilename());
+                 unlink(__DIR__.'/../album/'.$this->article->getFilename());
+             }
+         }
+
+        /**
+         * 削除フラグが立った時は記事の表示をなし
+         */
         public function find($id) {
-            $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE id=:id");
+            $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE id=:id AND is_delete=0");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -142,7 +166,7 @@
         fetchAll() articlesテーブルの値を全て取ってくる
         */
         public function findAll() {
-            $stmt = $this->dbh->prepare("SELECT * FROM articles");
+            $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE is_delete=0 ORDER BY created_at DESC");
             $stmt->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $articles = array();
