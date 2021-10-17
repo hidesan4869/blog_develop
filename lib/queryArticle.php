@@ -82,15 +82,10 @@
 
                 //新しいファイルがアップロードされた時
                 if ($file = $this->article->getFile()) {
-
                     //ファイルが既に存在する場合、古いファイルを削除
-                    if ($this->article->getFilename()) {
-                        unlink(__DIR__.'/../album/thumbs-'.$this->article->getFilename());
-                        unlink(__DIR__.'/../album/'.$this->article->getFilename());
-                        //新しいファイルをアップロード
-                    }
-                        $this->article->setFilename($this->saveFile($file['tmp_name']));
-                        $filename = $this->article->getFilename();
+                    $this->deleteFile();
+                    $this->article->setFilename($this->saveFile($file['tmp_name']));
+                    $filename = $this->article->getFilename();
                 }
 
                 $stmt = $this->dbh->prepare("UPDATE articles SET title=:title, body=:body, filename=:filename, updated_at=NOW() WHERE id=:id");
