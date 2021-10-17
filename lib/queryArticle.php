@@ -117,9 +117,11 @@
         /**
          * delete()メソッド
          * delete.phpの削除処理
+         * $this->deleteFile() : 画像の削除
          */
         public function delete() {
             if ($this->article->getId()) {
+                $this->deleteFile();
                 $id = $this->article->getId();
                 $stmt = $this->dbh->prepare("UPDATE articles SET is_delete=1 WHERE id=:id");
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -129,7 +131,7 @@
 
         /**
          * deleteFile()
-         * 削除した後に画像のデータも削除するメソッド
+         * 削除した後に画像のデータも削除
          */
          private function deleteFile() {
              if ($this->article->getFilename) {
