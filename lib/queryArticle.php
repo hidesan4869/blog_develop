@@ -147,19 +147,8 @@
             $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE id=:id AND is_delete=0");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            $article = null;
-
-            if ($result) {
-                $article = new Article();
-                $article->setId($result['id']);
-                $article->setTitle($result['title']);
-                $article->setBody($result['body']);
-                $article->setFilename($result['filename']);
-                $article->setCreatedAt($result['created_at']);
-                $article->setUpdatedAt($result['updated_at']);
-            }
-            return $article;
+            $articles = $this->getArticles($stmt->fetchAll(PDO::FETCH_ASSOC));
+            return $articles[0];
         }
 
         /*
@@ -169,18 +158,7 @@
             $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE is_delete=0 ORDER BY created_at DESC");
             $stmt->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $articles = array();
-
-            foreach($results as $result) {
-                $article = new Article();
-                $article->setId($result['id']);
-                $article->setTitle($result['title']);
-                $article->setBody($result['body']);
-                $article->setFilename($result['filename']);
-                $article->setCreatedAt($result['created_at']);
-                $article->setUpdatedAt($result['updated_at']);
-                $articles[] = $article;
-            }
+            $articles = $this->getArticles($stmt->fetchAll(PDO::FETCH_ASSOC));
             return $articles;
         }
         public function getPager($page = 1, $limit = 10){
