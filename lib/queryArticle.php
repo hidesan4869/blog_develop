@@ -134,7 +134,7 @@
 
             
         public function find($id) {
-            $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE id=:id");
+            $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE id=:id AND id_delete=0");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -156,7 +156,7 @@
         fetchAll() articlesテーブルの値を全て取ってくる
         */
         public function findAll() {
-            $stmt = $this->dbh->prepare("SELECT * FROM articles");
+            $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE is_delete=0 ORDER BY created_at DESC");
             $stmt->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $articles = array();
