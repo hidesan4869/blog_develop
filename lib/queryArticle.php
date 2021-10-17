@@ -136,7 +136,7 @@
          * deleteFile()
          * 削除した後に画像のデータも削除するメソッド
          */
-         public function deleteFile() {
+         private function deleteFile() {
              if ($this->article->getFilename) {
                  unlink(__DIR__.'/../album/thumbs-'.$this->article->getFilename());
                  unlink(__DIR__.'/../album'.$this->article->getFilename());
