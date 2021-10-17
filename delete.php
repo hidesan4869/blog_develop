@@ -11,6 +11,7 @@
      * idをgetで取得して、idが存在した場合、QueryArticleをインスタンス化
      * idをfindメソッドのidで取得して自分自身(article)にセットし、削除処理を実行
      * つまりdelete.phpで該当レコードを取得したのち、Articleを経由してQueryArticleの削除処理を呼ぶ
+     * articleクラス参照
      */
     if (!empty($_GET['id'])) {
         $queryArticle = new QueryArticle();

@@ -126,15 +126,17 @@
         public function delete() {
             if ($this->article->getId()) {
                 $id = $this->article->getId();
-                $stmt = $this->dbh->prepare("UPDATE articles SET id_delete=1 WHERE id=:id");
+                $stmt = $this->dbh->prepare("UPDATE articles SET is_delete=1 WHERE id=:id");
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
             }
         }
 
-            
+        /**
+         * 削除フラグが立った時は記事の表示をなし
+         */
         public function find($id) {
-            $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE id=:id AND id_delete=0");
+            $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE id=:id AND is_delete=0");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
