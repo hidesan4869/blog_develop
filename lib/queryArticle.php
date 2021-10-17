@@ -133,6 +133,17 @@
         }
 
         /**
+         * deleteFile()
+         * 削除した後に画像のデータも削除するメソッド
+         */
+         public function deleteFile() {
+             if ($this->article->getFilename) {
+                 unlink(__DIR__.'/../album/thumbs-'.$this->article->getFilename());
+                 unlink(__DIR__.'/../album'.$this->article->getFilename());
+             }
+         }
+
+        /**
          * 削除フラグが立った時は記事の表示をなし
          */
         public function find($id) {
