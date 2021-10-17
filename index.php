@@ -1,3 +1,12 @@
+<?php 
+  include 'lib/connect.php';
+  include 'lib/queryArticle.php';
+  include 'lib/article.php';
+
+  $queryArticle = new QueryArticle();
+  $article = $queryArticle->findAll();
+?>
+
 <!doctype html>
 <html lang="ja">
   <head>
