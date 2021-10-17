@@ -124,7 +124,12 @@
          * delete.phpの削除処理
          */
         public function delete() {
-
+            if ($this->article->getId()) {
+                $id = $this->article->getId();
+                $stmt = $this->dbh->prepare("UPDATE articles SET id_delete=1 WHERE id=:id");
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+                $stmt->execute();
+            }
         }
 
             
