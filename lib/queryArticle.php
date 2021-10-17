@@ -183,5 +183,25 @@
             }
             return $articles;
         }
+        public function getPager($page = 1, $limit = 10){
+            $start = ($page - 1) * $limit;  // LIMIT x, y：1ページ目を表示するとき、xは0になる
+            $pager = array('total' => null, 'articles' => null);
+        
+            // 総記事数
+            $stmt = $this->dbh->prepare("SELECT COUNT(*) FROM articles WHERE is_delete=0");
+            $stmt->execute();
+            $pager['total'] = $stmt->fetchColumn();
+        
+            // 表示するデータ
+            $stmt = $this->dbh->prepare("SELECT * FROM articles
+              WHERE is_delete=0
+              ORDER BY created_at DESC
+              LIMIT :start, :limit");
+            $stmt->bindParam(':start', $start, PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            $pager['articles'] = $this->getArticles($stmt->fetchAll(PDO::FETCH_ASSOC));
+            return $pager;
+          }
     }
 ?>
