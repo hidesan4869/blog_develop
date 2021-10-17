@@ -25,7 +25,6 @@
 
                 //キャンバス作成
                 $canvas = imagecreatetruecolor(self::THUMBS_WIDTH, $thumbs_height);
-
                 switch ($type) {
                     case IMAGETYPE_JPEG;
                     $new_name .= 'jpg';
@@ -72,7 +71,6 @@
         }
         /*
         IDが存在する時は上書き処理
-        IDがなければ新規追加
         */
         public function save(){
             $title = $this->article->getTitle();
@@ -86,23 +84,21 @@
                 if ($file = $this->article->getFile()) {
 
                     //ファイルが既に存在する場合、古いファイルを削除
-                    if ($this -> article -> getFilename()) {
-                        unlink(__DIR__.'/../album/thumbs-'. $this->article->getFilename());
-                        unlink(__DIR__.'/../album/'. $this->article->getFilename());
+                    if ($this->article->getFilename()) {
+                        unlink(__DIR__.'/../album/thumbs-'.$this->article->getFilename());
+                        unlink(__DIR__.'/../album/'.$this->article->getFilename());
+                        //新しいファイルをアップロード
                     }
-                    //新しいファイルをアップロード
-                    $this->article->setFilename($this->saveFile(['tmp_name']));
-                    $filename = $this->article->getFilename();
+                        $this->article->setFilename($this->saveFile($file['tmp_name']));
+                        $filename = $this->article->getFilename();
                 }
 
-                $stmt = $this->dbh->prepare("UPDATE articles
-                SET title=:title, body=:body, filename=:filename, updated_at=NOW() WHERE id=:id");
+                $stmt = $this->dbh->prepare("UPDATE articles SET title=:title, body=:body, filename=:filename, updated_at=NOW() WHERE id=:id");
                 $stmt->bindParam(':title', $title, PDO::PARAM_STR);
                 $stmt->bindParam(':body', $body, PDO::PARAM_STR);
                 $stmt->bindParam(':filename', $filename, PDO::PARAM_STR);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
-     
                 /**
                  * $is_upload = アップロード可否を決める変数
                  * $type = 画像の種類を取得する
@@ -112,17 +108,16 @@
             } else {
 
                   if ($file = $this->article->getFile()) {
-                      $this->article->setFilename( $this->saveFile($file['tmp_name']));
+                      $this->article->setFilename($this->saveFile($file['tmp_name']));
                       $filename = $this->article->getFilename();
                   }
+                  $stmt = $this->dbh->prepare("INSERT INTO articles (title, body, filename, created_at, updated_at) VALUES  (:title, :body, :filename, NOW(), NOW())");
+                  $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+                  $stmt->bindParam(':body', $body, PDO::PARAM_STR);
+                  $stmt->bindParam(':filename', $filename, PDO::PARAM_STR);
+                  $stmt->execute();
                 }
-                
-                $stmt = $this->dbh->prepare("INSERT INTO articles (title, body, filename, created_at, updated_at) VALUES  (:title, :body, :filename, NOW(), NOW())");
-                $stmt->bindParam(':title', $title, PDO::PARAM_STR);
-                $stmt->bindParam(':body', $body, PDO::PARAM_STR);
-                $stmt->bindParam(':filename', $filename, PDO::PARAM_STR);
-                $stmt->execute();
-                }
+            }
             
         public function find($id) {
             $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE id=:id");
@@ -165,3 +160,16 @@
             return $articles;
         }
     }
+?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <img src="/../blog/album/" alt="">
+    </body>
+    </html>
