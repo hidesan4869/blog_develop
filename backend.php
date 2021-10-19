@@ -15,7 +15,7 @@
   }
 
   $queryArticle = new QueryArticle();
-  $articles = $queryArticle->getPager($page, $limit);
+  $pager = $queryArticle->getPager($page, $limit);
 ?>
 
 <!doctype html>
@@ -62,7 +62,7 @@
       <div class="row">
         <div class="col-md-12">
           <h1>記事一覧</h1>
-          <?php if ($articles): ?>
+          <?php if ($pager['articles']) : ?>
           <table class="table table-bordered">
             <thead>
               <tr>
@@ -76,7 +76,7 @@
               </tr>
             </thead>
             <tbody>
-              <?php foreach($pager['articles'] as $article): ?>
+              <?php foreach($pager['articles'] as $article) : ?>
                 <tr>
                   <td><?php echo $article->getId() ?></td>
                   <td><?php echo $article->getTitle() ?></td>
@@ -99,7 +99,7 @@
           <?php endif ?>
 
           <!---ページャーの追加-->
-          <?php if (!empty($page['total'])) : ?>
+          <?php if (!empty($pager['total'])) : ?>
             <nav aria-label="Page navigation example">
               <ul class="pagination">
                 <?php for ($i = 1; $i <= ceil($pager['total'] / $limit); $i++) : ?>

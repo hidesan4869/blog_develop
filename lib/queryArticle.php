@@ -150,7 +150,6 @@
             $articles = $this->getArticles($stmt->fetchAll(PDO::FETCH_ASSOC));
             return $articles[0];
         }
-
         /*
         fetchAll() articlesテーブルの値を全て取ってくる
         */
@@ -161,6 +160,10 @@
             $articles = $this->getArticles($stmt->fetchAll(PDO::FETCH_ASSOC));
             return $articles;
         }
+
+        /**
+         * getPager
+         */
         public function getPager($page = 1, $limit = 10){
             $start = ($page - 1) * $limit;  // LIMIT x, y：1ページ目を表示するとき、xは0になる
             $pager = array('total' => null, 'articles' => null);
@@ -169,7 +172,7 @@
             $stmt = $this->dbh->prepare("SELECT COUNT(*) FROM articles WHERE is_delete=0");
             $stmt->execute();
             $pager['total'] = $stmt->fetchColumn();
-        
+            
             // 表示するデータ
             $stmt = $this->dbh->prepare("SELECT * FROM articles
               WHERE is_delete=0

@@ -3,8 +3,15 @@
   include 'lib/queryArticle.php';
   include 'lib/article.php';
 
+  $limit = 5;
+  $page = 1;
+
+  if (!empty($_GET['page']) && intval($_GET['page']) > 0) {
+    $page = intval($_GET['page']);
+  }
+
   $queryArticle = new QueryArticle();
-  $articles = $queryArticle->findAll();
+  $pager = $queryArticle->getPager($page, $limit);
 ?>
 
 <!doctype html>
@@ -48,8 +55,8 @@
 <main class="container">
   <div class="row">
     <div class="col-md-8">
-      <?php if ($articles) : ?>
-        <?php foreach ($articles as $article) : ?>
+      <?php if ($pager['articles']) : ?>
+        <?php foreach ($pager['articles'] as $article) : ?>
           <article class="blog-post">
             <h2 class="blog-post-title">
               <a href="view.php?id=<?php echo $article->getId() ?>">
@@ -65,6 +72,16 @@
             <div class="alert alert-success">
               <p>記事はありません</p>
             </div>
+          <?php endif ?>
+
+          <?php if(!empty($pager['total'])) : ?>
+            <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                <?php for($i = 1; $i <= ceil($pager['total'] / $limit); $i++) : ?>
+                  <li class="page-item"><a  class="page-link" href="index.php?page=<?php echo $i ?>"><?php echo $i ?></a></li>
+                <?php endfor ?>
+              </ul>
+            </nav>
           <?php endif ?>
     </div>
 
