@@ -147,21 +147,9 @@
             $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE id=:id AND is_delete=0");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            $article = null;
-
-            if ($result) {
-                $article = new Article();
-                $article->setId($result['id']);
-                $article->setTitle($result['title']);
-                $article->setBody($result['body']);
-                $article->setFilename($result['filename']);
-                $article->setCreatedAt($result['created_at']);
-                $article->setUpdatedAt($result['updated_at']);
-            }
-            return $article;
+            $articles = $this->getArticles($stmt->fetchAll(PDO::FETCH_ASSOC));
+            return $articles[0];
         }
-
         /*
         fetchAll() articlesテーブルの値を全て取ってくる
         */
@@ -169,9 +157,40 @@
             $stmt = $this->dbh->prepare("SELECT * FROM articles WHERE is_delete=0 ORDER BY created_at DESC");
             $stmt->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $articles = array();
+            $articles = $this->getArticles($stmt->fetchAll(PDO::FETCH_ASSOC));
+            return $articles;
+        }
 
-            foreach($results as $result) {
+        /**
+         * getPager
+         */
+        public function getPager($page = 1, $limit = 10){
+            $start = ($page - 1) * $limit;  // LIMIT x, y：1ページ目を表示するとき、xは0になる
+            $pager = array('total' => null, 'articles' => null);
+        
+            // 総記事数
+            $stmt = $this->dbh->prepare("SELECT COUNT(*) FROM articles WHERE is_delete=0");
+            $stmt->execute();
+            $pager['total'] = $stmt->fetchColumn();
+            
+            // 表示するデータ
+            $stmt = $this->dbh->prepare("SELECT * FROM articles
+              WHERE is_delete=0
+              ORDER BY created_at DESC
+              LIMIT :start, :limit");
+            $stmt->bindParam(':start', $start, PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            $pager['articles'] = $this->getArticles($stmt->fetchAll(PDO::FETCH_ASSOC));
+            return $pager;
+          }
+
+          /**
+           * getArticles
+           */
+          private function getArticles($results) {
+            $articles = array();
+            foreach ($results as $result) {
                 $article = new Article();
                 $article->setId($result['id']);
                 $article->setTitle($result['title']);
@@ -182,18 +201,6 @@
                 $articles[] = $article;
             }
             return $articles;
-        }
+          }
     }
 ?>
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-    </head>
-    <body>
-        <img src="/../blog/album/" alt="">
-    </body>
-    </html>
